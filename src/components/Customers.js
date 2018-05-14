@@ -1,210 +1,210 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import customers from '../helpers/Data';
 import ReactDataGrid from 'react-data-grid';
 import update from 'immutability-helper';
-const {
-  Editors
-
-} = require('react-data-grid-addons');
-const {
-  AutoComplete: AutoCompleteEditor,
-} = Editors;
-
+import ViewDetails from './ViewDetails';
+const { Editors } = require('react-data-grid-addons');
+const { AutoComplete: AutoCompleteEditor } = Editors;
 
 // options for status autocomplete editor
-const priorities = [{
-  id: 0,
-  title: 'Prospective'
-}, {
-  id: 1,
-  title: 'Non Active'
-}, {
-  id: 2,
-  title: 'Current'
-}];
-const PrioritiesEditor = < AutoCompleteEditor options = {
-  priorities
-}
-/>;
+const priorities = [
+  {
+    id: 0,
+    title: 'Prospective'
+  },
+  {
+    id: 1,
+    title: 'Non Active'
+  },
+  {
+    id: 2,
+    title: 'Current'
+  }
+];
+const PrioritiesEditor = <AutoCompleteEditor options={priorities} />;
 
 const {
   Toolbar,
-  Data: {
-    Selectors
-  }
+  Data: { Selectors }
 } = require('react-data-grid-addons');
 
-
-
 class Customers extends React.Component {
-    constructor(props, context) {
-      super(props, context);
-      this._columns = [{
-          key: 'id',
-          name: 'ID',
-          width: 80
-        },
-        {
-          key: 'email',
-          name: 'Email',
-          filterable: true,
-          sortable: true
-        },
-        {
-          key: 'name',
-          name: 'Name',
-          filterable: true,
-          sortable: true
-        },
-        {
-          key: 'creation',
-          name: 'Creation ',
-          filterable: true,
-          sortable: true
-        },
-        {
-          key: 'status',
-          name: 'Status',
-          filterable: true,
-          sortable: true,
-          editor: PrioritiesEditor
+  constructor(props, context) {
+    super(props, context);
+    this._columns = [
+      {
+        key: 'id',
+        name: 'ID',
+        width: 80
+      },
+      {
+        key: 'email',
+        name: 'Email',
+        filterable: true,
+        sortable: true
+      },
+      {
+        key: 'name',
+        name: 'Name',
+        filterable: true,
+        sortable: true
+      },
+      {
+        key: 'creation',
+        name: 'Creation ',
+        filterable: true,
+        sortable: true
+      },
+      {
+        key: 'status',
+        name: 'Status',
+        filterable: true,
+        sortable: true,
+        editor: PrioritiesEditor
+      },
 
-        },
+      {
+        key: 'notes',
+        name: 'Notes',
+        filterable: true,
+        sortable: true
+      }
+    ];
 
-        {
-          key: 'notes',
-          name: 'Notes',
-          filterable: true,
-          sortable: true
-        }
-      ];
+    this.state = {
+      rows: this.props.data,
+      filters: {},
+      sortColumn: null,
+      sortDirection: null,
+      selectedIndexes: '',
+      selectedRow: {}
+    };
+  }
 
-      this.state = {
-        rows: customers,
-        filters: {},
-        sortColumn: null,
-        sortDirection: null
-      };
+  getRandomDate = (start, end) => {
+    return new Date(
+      start.getTime() + Math.random() * (end.getTime() - start.getTime())
+    ).toLocaleDateString();
+  };
+
+  createRows = numberOfRows => {
+    let rows = [];
+    for (let i = 1; i < numberOfRows; i++) {
+      rows.push({
+        id: i,
+        name: 'Name ' + i,
+        email: 'random@random.com',
+        complete: Math.min(100, Math.round(Math.random() * 110)),
+        creationDate: this.getRandomDate(new Date(2015, 3, 1), new Date()),
+        status: ['Prospective', 'Current', 'Non Active'][
+          Math.floor(Math.random() * 2 + 1)
+        ],
+
+        Notes: 'notes'
+      });
+    }
+    return rows;
+  };
+
+  getRows = () => {
+    return Selectors.getRows(this.state);
+  };
+
+  getSize = () => {
+    return this.getRows().length;
+  };
+
+  rowGetter = rowIdx => {
+    const rows = this.getRows();
+    return rows[rowIdx];
+  };
+
+  handleGridSort = (sortColumn, sortDirection) => {
+    this.setState({
+      sortColumn: sortColumn,
+      sortDirection: sortDirection
+    });
+  };
+
+  handleFilterChange = filter => {
+    let newFilters = Object.assign({}, this.state.filters);
+    if (filter.filterTerm) {
+      newFilters[filter.column.key] = filter;
+    } else {
+      delete newFilters[filter.column.key];
     }
 
-    getRandomDate = (start, end) => {
-      return new Date(
-        start.getTime() + Math.random() * (end.getTime() - start.getTime())
-      ).toLocaleDateString();
-    };
+    this.setState({
+      filters: newFilters
+    });
+  };
 
-    createRows = numberOfRows => {
-      let rows = [];
-      for (let i = 1; i < numberOfRows; i++) {
-        rows.push({
-          id: i,
-          name: 'Name ' + i,
-          email: 'random@random.com',
-          complete: Math.min(100, Math.round(Math.random() * 110)),
-          creationDate: this.getRandomDate(new Date(2015, 3, 1), new Date()),
-          status: ['Prospective', 'Current', 'Non Active'][
-            Math.floor(Math.random() * 2 + 1)
-          ],
+  onClearFilters = () => {
+    this.setState({
+      filters: {}
+    });
+  };
 
-          Notes: 'notes'
-        });
-      }
-      return rows;
-    };
+  handleGridRowsUpdated({ fromRow, toRow, updated }) {
+    let rows = this.state.rows.slice();
 
-    getRows = () => {
-      return Selectors.getRows(this.state);
-    };
-
-    getSize = () => {
-      return this.getRows().length;
-    };
-
-    rowGetter = rowIdx => {
-      const rows = this.getRows();
-      return rows[rowIdx];
-    };
-
-    handleGridSort = (sortColumn, sortDirection) => {
-      this.setState({
-        sortColumn: sortColumn,
-        sortDirection: sortDirection
+    for (let i = fromRow; i <= toRow; i++) {
+      let rowToUpdate = rows[i];
+      let updatedRow = update(rowToUpdate, {
+        $merge: updated
       });
-    };
+      rows[i] = updatedRow;
+    }
 
-    handleFilterChange = filter => {
-      let newFilters = Object.assign({}, this.state.filters);
-      if (filter.filterTerm) {
-        newFilters[filter.column.key] = filter;
-      } else {
-        delete newFilters[filter.column.key];
-      }
+    this.setState({
+      rows
+    });
+  }
 
-      this.setState({
-        filters: newFilters
-      });
-    };
+  onRowsSelected(rows) {
+    this.setState({
+      selectedIndexes: rows.map(r => r.rowIdx),
+      selectedRow: rows.map(r => r.row)
+    });
+  }
 
-    onClearFilters = () => {
-      this.setState({
-        filters: {}
-      });
-    };
-
-    handleGridRowsUpdated = ({
-      fromRow,
-      toRow,
-      updated
-    }) => {
-      let rows = this.state.rows.slice();
-
-      for (let i = fromRow; i <= toRow; i++) {
-        let rowToUpdate = rows[i];
-        let updatedRow = update(rowToUpdate, {
-          $merge: updated
-        });
-        rows[i] = updatedRow;
-      }
-
-      this.setState({
-        rows
-      });
-    };
-    render() {
-
-        return ( < ReactDataGrid onGridSort = {
-            this.handleGridSort
-          }
-          enableCellSelect = {
-            true
-          }
-          columns = {
-            this._columns
-          }
-          rowGetter = {
-            this.rowGetter
-          }
-          rowsCount = {
-            this.getSize()
-          }
-          minHeight = {
-            500
-          }
-          toolbar = { < Toolbar enableFilter = {
-              true
+  onRowsDeselected(rows) {
+    let rowIndexes = rows.map(r => r.rowIdx);
+    this.setState({
+      selectedRow: {},
+      selectedIndexes: this.state.selectedIndexes.filter(
+        i => rowIndexes.indexOf(i) === -1
+      )
+    });
+  }
+  render() {
+    console.log(this.props.data[0]);
+    return (
+      <div>
+        <ReactDataGrid
+          onGridSort={this.handleGridSort}
+          enableCellSelect={true}
+          columns={this._columns}
+          rowGetter={this.rowGetter}
+          rowsCount={this.getSize()}
+          minHeight={500}
+          toolbar={<Toolbar enableFilter={true} />}
+          onAddFilter={this.handleFilterChange}
+          onClearFilters={this.onClearFilters}
+          onGridRowsUpdated={this.handleGridRowsUpdated.bind(this)}
+          rowSelection={{
+            showCheckbox: true,
+            enableShiftSelect: false,
+            onRowsSelected: this.onRowsSelected.bind(this),
+            onRowsDeselected: this.onRowsDeselected.bind(this),
+            selectBy: {
+              indexes: this.state.selectedIndexes
             }
-            />}
-            onAddFilter = {
-              this.handleFilterChange
-            }
-            onClearFilters = {
-              this.onClearFilters
-            }
-            onGridRowsUpdated = {
-              this.handleGridRowsUpdated
-            }
-            />);
-          }
-        }
-        export default Customers;
+          }}
+        />
+        <ViewDetails selected={this.state.selectedRow[0]} />
+      </div>
+    );
+  }
+}
+export default Customers;
