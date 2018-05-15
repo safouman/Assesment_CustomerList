@@ -1,14 +1,14 @@
-
-
-   # Assesment_CustomerList
+# Assesment_CustomerList
 
 Customer List Simple React Firebase Web App
 
 Demo link: [Here](https://propellerhead-99701.firebaseapp.com)
 
 This is a simple ReactJS, Firebase and Bootstrap Customer list web app.
+The app uses a realtime database to pull data from.
+It is basically a serverless app since there are no complicated backend is needed.
 
-
+The same database data can be found in the helper folder as Data.json
 
 ### Tech
 
@@ -27,26 +27,22 @@ Install the dependencies and devDependencies and start the server.
 
 ```sh
 $ cd project directory
-$ npm install 
+$ npm install
 $ nmp start
 Browse  to localhost:3000
 ```
+
 ### Deploy/Run Scripts
 
-- npm start (start locally on localhost:3000)
-- npm run build (Generates a build for production deployment)
-- npm run test (runs some tests)
-- npm run deploy (deploy the build to firebase)
+* npm start (start locally on localhost:3000)
+* npm run build (Generates a build for production deployment)
+* npm run test (runs some tests)
+* npm run deploy (deploy the build to firebase)
 
-
-
-Data is pulled from Firebase real time databse.
-Same data can be found in the helper folder as Data.json
 ### Todos
 
-
- - Pivot to Redux architecture for better state management and for better scaling
-  - Write MORE Tests
-  - Fix some small  console warnings
- - Work on Design: Currently it's really basic design
- - Add more features : Add, delete, edit,authentication , etc..
+* Pivot to Redux architecture for better state management and for better scaling
+* Write MORE Tests
+* Fix some small console warnings
+* Work on Design: Currently it's really basic design
+* Add more features : Add, delete, edit,authentication , etc..
