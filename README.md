@@ -6,7 +6,7 @@ Demo link: [Here](https://propellerhead-99701.firebaseapp.com)
 
 This is a simple ReactJS, Firebase and Bootstrap Customer list web app.
 The app uses a realtime database to pull data from.
-It is basically a serverless app since there are no complicated backend is needed.
+It is basically a serverless app since no complicated backend is needed.
 
 The same database data can be found in the helper folder as Data.json
 
