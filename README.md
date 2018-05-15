@@ -10,6 +10,13 @@ It is basically a serverless app since no complicated backend is needed.
 
 The same database data can be found in the helper folder as Data.json
 
+### Features
+
+- Browse Customer List
+- Check a row to see details of a customer
+- Double click on the status cell to change it
+- Add a note to a customer row
+
 ### Tech
 
 This app uses a number of open source projects to work properly:
