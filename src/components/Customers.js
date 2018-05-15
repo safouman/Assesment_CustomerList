@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ReactDataGrid from 'react-data-grid';
 import update from 'immutability-helper';
 import ViewDetails from './ViewDetails';
+
 const { Editors } = require('react-data-grid-addons');
 const { AutoComplete: AutoCompleteEditor } = Editors;
 
@@ -130,7 +131,7 @@ class Customers extends React.Component {
         $merge: updated
       });
       rows[i] = updatedRow;
-      console.log(updatedRow.id);
+
       this.props.db.child(updatedRow.id - 1).update({
         status: updatedRow.status
       });

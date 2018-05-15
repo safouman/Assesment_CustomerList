@@ -41,7 +41,6 @@ class ViewDetails extends React.Component {
     }
   }
   render() {
-    console.log(this.state.data);
     if (this.state.data !== undefined && this.state.data.notes !== undefined) {
       const listItems = (
         <div

@@ -12,9 +12,8 @@ class AddNote extends React.Component {
     };
   }
   handleSaveNote() {
-    console.log(this.props);
-    let newdata = this.props.selected.notes.push(this.state.note);
-    console.log(newdata, 'newdata');
+    this.props.selected.notes.push(this.state.note);
+
     this.DbSave(this.props.selected);
     // this.props.Savehandler(this.props.selected);
     this.setState({ note: '' });
