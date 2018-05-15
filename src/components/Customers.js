@@ -28,6 +28,7 @@ const {
   Data: { Selectors }
 } = require('react-data-grid-addons');
 
+// component to render cutomers list
 class Customers extends React.Component {
   constructor(props, context) {
     super(props, context);
@@ -81,31 +82,6 @@ class Customers extends React.Component {
     };
   }
 
-  getRandomDate = (start, end) => {
-    return new Date(
-      start.getTime() + Math.random() * (end.getTime() - start.getTime())
-    ).toLocaleDateString();
-  };
-
-  createRows = numberOfRows => {
-    let rows = [];
-    for (let i = 1; i < numberOfRows; i++) {
-      rows.push({
-        id: i,
-        name: 'Name ' + i,
-        email: 'random@random.com',
-        complete: Math.min(100, Math.round(Math.random() * 110)),
-        creationDate: this.getRandomDate(new Date(2015, 3, 1), new Date()),
-        status: ['Prospective', 'Current', 'Non Active'][
-          Math.floor(Math.random() * 2 + 1)
-        ],
-
-        Notes: 'notes'
-      });
-    }
-    return rows;
-  };
-
   getRows = () => {
     return Selectors.getRows(this.state);
   };
@@ -154,11 +130,16 @@ class Customers extends React.Component {
         $merge: updated
       });
       rows[i] = updatedRow;
+      console.log(updatedRow.id);
+      this.props.db.child(updatedRow.id - 1).update({
+        status: updatedRow.status
+      });
     }
-
+    //make changes to state
     this.setState({
       rows
     });
+    //make changes to db
   }
 
   onRowsSelected(rows) {
@@ -178,7 +159,6 @@ class Customers extends React.Component {
     });
   }
   render() {
-    console.log(this.props.data[0]);
     return (
       <div>
         <ReactDataGrid
@@ -202,7 +182,7 @@ class Customers extends React.Component {
             }
           }}
         />
-        <ViewDetails selected={this.state.selectedRow[0]} />
+        <ViewDetails selected={this.state.selectedRow[0]} db={this.props.db} />
       </div>
     );
   }

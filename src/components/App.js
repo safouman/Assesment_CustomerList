@@ -43,7 +43,7 @@ class App extends React.Component {
           Propellerhead
         </h1>
         {this.state.data[0] ? (
-          <Customers data={this.state.data} />
+          <Customers data={this.state.data} db={this.database} />
         ) : (
           <h2
             style={{

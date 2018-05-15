@@ -1,33 +1,48 @@
 import React from 'react';
-
+import AddNote from './AddNote';
 import 'bootstrap/dist/css/bootstrap.css';
 
-const data = [
-  {
-    id: 1,
-    email: 'ewellstood0@prlog.org',
-    name: 'Edie',
-    creation: '6/13/2017',
-    status: 'Current',
-    notes: [
-      'Pellentesque at nulla. Suspendisse potenti. Cras in purus eu magna vulputate luctus.\n\nCum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus vestibulum sagittis sapien. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.',
-      'Nullam porttitor lacus at turpis. Donec posuere metus vitae ipsum. Aliquam non mauris.',
-      'Vestibulum ac est lacinia nisi venenatis tristique. Fusce congue, diam id ornare imperdiet, sapien urna pretium nisl, ut volutpat sapien arcu sed augue. Aliquam erat volutpat.'
-    ]
-  }
-];
-
+//component to view cutomer details
 class ViewDetails extends React.Component {
   constructor(props, context) {
     super(props, context);
-
+    this.Savehandler = this.Savehandler.bind(this);
     this.state = {
-      data: {}
+      editNote: false,
+      btnaddnote: 'Add Note',
+      data: this.props.selected
     };
   }
-
+  Savehandler(newdata) {
+    this.setState({ data: newdata });
+  }
+  componentWillReceiveProps(newprops) {
+    this.setState({
+      data: newprops.selected
+    });
+  }
+  renderEditnote() {
+    if (this.state.editNote) {
+      return (
+        <AddNote
+          Savehandler={this.Savehandler}
+          selected={this.state.data}
+          db={this.props.db}
+        />
+      );
+    }
+  }
+  renderNotes() {}
+  handleAddNote() {
+    if (this.state.editNote) {
+      this.setState({ editNote: false, btnaddnote: 'Add Note' });
+    } else {
+      this.setState({ editNote: true, btnaddnote: 'Cancel' });
+    }
+  }
   render() {
-    if (this.props.selected) {
+    console.log(this.state.data);
+    if (this.state.data !== undefined && this.state.data.notes !== undefined) {
       const listItems = (
         <div
           style={{
@@ -47,7 +62,7 @@ class ViewDetails extends React.Component {
           >
             Customer Details
           </h4>
-          <li className="list-group-item" key={this.props.selected.id}>
+          <li className="list-group-item" key={this.state.data.id}>
             <label
               style={{
                 justifyContent: 'center',
@@ -56,9 +71,9 @@ class ViewDetails extends React.Component {
             >
               ID :
             </label>
-            {this.props.selected.id}
+            {this.state.data.id}
           </li>
-          <li className="list-group-item" key={this.props.selected.email}>
+          <li className="list-group-item" key={this.state.data.email}>
             <label
               style={{
                 justifyContent: 'center',
@@ -67,9 +82,9 @@ class ViewDetails extends React.Component {
             >
               Email :
             </label>
-            {this.props.selected.email}
+            {this.state.data.email}
           </li>
-          <li className="list-group-item" key={this.props.selected.name}>
+          <li className="list-group-item" key={this.state.data.name}>
             <label
               style={{
                 justifyContent: 'center',
@@ -78,9 +93,9 @@ class ViewDetails extends React.Component {
             >
               Name:
             </label>
-            {this.props.selected.name}
+            {this.state.data.name}
           </li>
-          <li className="list-group-item" key={this.props.selected.creation}>
+          <li className="list-group-item" key={this.state.data.creation}>
             <label
               style={{
                 justifyContent: 'center',
@@ -89,9 +104,9 @@ class ViewDetails extends React.Component {
             >
               Creation :
             </label>
-            {this.props.selected.creation}
+            {this.state.data.creation}
           </li>
-          <li className="list-group-item" key={this.props.selected.statusl}>
+          <li className="list-group-item" key={this.state.data.statusl}>
             <label
               style={{
                 justifyContent: 'center',
@@ -100,9 +115,10 @@ class ViewDetails extends React.Component {
             >
               Status :
             </label>
-            {this.props.selected.status}
+
+            {this.state.data.status}
           </li>
-          {this.props.selected.notes.map((d, i) => {
+          {this.state.data.notes.map((d, i) => {
             return (
               <div>
                 <li className="list-group-item" key={i}>
@@ -119,12 +135,22 @@ class ViewDetails extends React.Component {
               </div>
             );
           })}
+          <button
+            style={{ marginTop: '2%' }}
+            type="button"
+            class="btn btn-secondary"
+            onClick={this.handleAddNote.bind(this)}
+          >
+            {this.state.btnaddnote}
+          </button>
+          {this.renderEditnote()}
         </div>
       );
-      console.log(this.props.selected.notes);
+
       return <div>{listItems}</div>;
+    } else {
+      return ' ';
     }
-    return '';
   }
 }
 export default ViewDetails;
